@@ -29,9 +29,9 @@
             }
           },
           {
-            "Name": "Description",
-            "DisplayName": "Description",
-            "Description": "Describes the asset being borrowed",
+            "Name": "Name",
+            "DisplayName": "Name",
+            "Description": "Name of the asset",
             "Type": {
               "Name": "string"
             }
@@ -56,19 +56,11 @@
         "Constructor": {
           "Parameters": [
             {
-              "Name": "description",
-              "Description": "The description of this asset",
-              "DisplayName": "Description",
+              "Name": "name",
+              "Description": "Name of the asset",
+              "DisplayName": "Name",
               "Type": {
                 "Name": "string"
-              }
-            },
-            {
-              "Name": "price",
-              "Description": "The price of this asset",
-              "DisplayName": "Price",
-              "Type": {
-                "Name": "money"
               }
             }
           ]
@@ -78,16 +70,7 @@
             "Name": "MakeOffer",
             "DisplayName": "Make Offer",
             "Description": "Make an offer",
-            "Parameters": [
-              {
-                "Name": "offerPrice",
-                "Description": "Offer Price",
-                "DisplayName": "Offer Price",
-                "Type": {
-                  "Name": "money"
-                }
-              }
-            ]
+            "Parameters": []
           },
           {
             "Name": "AcceptOffer",
@@ -111,7 +94,7 @@
             "Style": "Success",
             "Transitions": [
               {
-                "AllowedRoles": [ "Buyer" ],
+                "AllowedRoles": [ "Borrower" ],
                 "AllowedInstanceRoles": [],
                 "Description": "Make an offer for this asset",
                 "Function": "MakeOffer",

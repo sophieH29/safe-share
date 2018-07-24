@@ -21,7 +21,7 @@ contract WorkbenchBase {
     }
 }
 
-contract SimpleMarketplace is WorkbenchBase('SimpleMarketplace', 'SimpleMarketplace')
+contract SafeShare is WorkbenchBase('SafeShare', 'SafeShare')
 {
     enum StateType { 
       ItemAvailable,
@@ -30,28 +30,22 @@ contract SimpleMarketplace is WorkbenchBase('SimpleMarketplace', 'SimpleMarketpl
     }
 
     address public InstanceOwner;
-    string public Description;
+    string public Name;
     int public AskingPrice;
     StateType public State;
 
-    address public InstanceBuyer;
-    int public OfferPrice;
+    address public InstanceBorrower;
 
-    function SimpleMarketplace(string description, int price) public
+    function SafeShare(string name) public
     {
         InstanceOwner = msg.sender;
-        AskingPrice = price;
-        Description = description;
+        Name = name;
         State = StateType.ItemAvailable;
         ContractCreated();
     }
 
-    function MakeOffer(int offerPrice) public
+    function MakeOffer() public
     {
-        if (offerPrice == 0)
-        {
-            revert();
-        }
 
         if (State != StateType.ItemAvailable)
         {
@@ -63,8 +57,7 @@ contract SimpleMarketplace is WorkbenchBase('SimpleMarketplace', 'SimpleMarketpl
             revert();
         }
 
-        InstanceBuyer = msg.sender;
-        OfferPrice = offerPrice;
+        InstanceBorrower = msg.sender;
         State = StateType.OfferPlaced;
         ContractUpdated('MakeOffer');
     }
@@ -81,7 +74,7 @@ contract SimpleMarketplace is WorkbenchBase('SimpleMarketplace', 'SimpleMarketpl
             revert();
         }
 
-        InstanceBuyer = 0x0;
+        InstanceBorrower = 0x0;
         State = StateType.ItemAvailable;
         ContractUpdated('Reject');
     }
