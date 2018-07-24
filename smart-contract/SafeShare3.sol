@@ -21,11 +21,11 @@ contract WorkbenchBase {
     }
 }
 
-contract SafeShare is WorkbenchBase('SafeShare', 'SafeShare')
+contract SafeShare3 is WorkbenchBase('SafeShare3', 'SafeShare3')
 {
     enum StateType { 
-      ItemAvailable,
-      OfferPlaced,
+      Offered,
+      Requested,
       Accepted
     }
 
@@ -36,18 +36,30 @@ contract SafeShare is WorkbenchBase('SafeShare', 'SafeShare')
 
     address public InstanceBorrower;
 
-    function SafeShare(string name) public
+    function SafeShare3(string name) public
     {
         InstanceOwner = msg.sender;
         Name = name;
-        State = StateType.ItemAvailable;
+        State = StateType.Offered;
         ContractCreated();
     }
 
-    function MakeOffer() public
+    function OfferAsset() public 
+    {
+        if ( msg.sender != InstanceBorrower )
+        {
+            revert();
+        }
+
+        InstanceBorrower = 0x0;
+        State = StateType.Offered;
+        ContractUpdated('Offered');
+    }
+
+    function Request() public
     {
 
-        if (State != StateType.ItemAvailable)
+        if (State != StateType.Offered)
         {
             revert();
         }
@@ -58,13 +70,13 @@ contract SafeShare is WorkbenchBase('SafeShare', 'SafeShare')
         }
 
         InstanceBorrower = msg.sender;
-        State = StateType.OfferPlaced;
-        ContractUpdated('MakeOffer');
+        State = StateType.Requested;
+        ContractUpdated('Request');
     }
 
     function Reject() public
     {
-        if ( State != StateType.OfferPlaced )
+        if ( State != StateType.Requested )
         {
             revert();
         }
@@ -75,7 +87,7 @@ contract SafeShare is WorkbenchBase('SafeShare', 'SafeShare')
         }
 
         InstanceBorrower = 0x0;
-        State = StateType.ItemAvailable;
+        State = StateType.Offered;
         ContractUpdated('Reject');
     }
 

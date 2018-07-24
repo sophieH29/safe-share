@@ -1,6 +1,6 @@
 {
-    "ApplicationName": "SafeShare",
-    "DisplayName": "Safe asset sharing app",
+    "ApplicationName": "SafeShare3",
+    "DisplayName": "SafeShare3",
     "Description": "The asset transfer smart contract covers the scenario for lending and borrowing assets, beetween group of people.",
     "ApplicationRoles": [
       {
@@ -14,11 +14,11 @@
     ],
     "Workflows": [
       {
-        "Name": "SafeShare",
+        "Name": "SafeShare3",
         "DisplayName": "Safe Share",
         "Description": "Handles the business logic for a lender-borrower scenario.",
         "Initiators": [ "Owner" ],
-        "StartState":  "ItemAvailable",
+        "StartState":  "Offered",
         "Properties": [
           {
             "Name": "State",
@@ -30,7 +30,7 @@
           },
           {
             "Name": "Name",
-            "DisplayName": "Name",
+            "DisplayName": "Asset name",
             "Description": "Name of the asset",
             "Type": {
               "Name": "string"
@@ -58,7 +58,7 @@
             {
               "Name": "name",
               "Description": "Name of the asset",
-              "DisplayName": "Name",
+              "DisplayName": "Asset name",
               "Type": {
                 "Name": "string"
               }
@@ -67,9 +67,9 @@
         },
         "Functions": [
           {
-            "Name": "MakeOffer",
-            "DisplayName": "Make Offer",
-            "Description": "Make an offer",
+            "Name": "Request",
+            "DisplayName": "Request asset",
+            "Description": "Request an asset",
             "Parameters": []
           },
           {
@@ -83,12 +83,18 @@
             "DisplayName": "Reject Offer",
             "Description": "Reject the offer made",
             "Parameters": []
+          },
+          {
+            "Name": "OfferAsset",
+            "DisplayName": "Offer asset",
+            "Description": "Make asset available on a list",
+            "Parameters": []
           }
         ],
         "States": [
           {
-            "Name": "ItemAvailable",
-            "DisplayName": "Item Available",
+            "Name": "Offered",
+            "DisplayName": "Offered",
             "Description": "The item is available",
             "PercentComplete": 20,
             "Style": "Success",
@@ -97,15 +103,15 @@
                 "AllowedRoles": [ "Borrower" ],
                 "AllowedInstanceRoles": [],
                 "Description": "Make an offer for this asset",
-                "Function": "MakeOffer",
-                "NextStates": [ "OfferPlaced" ],
-                "DisplayName": "Make Offer"
+                "Function": "Request",
+                "NextStates": [ "Requested" ],
+                "DisplayName": "Request"
               }
             ]
           },
           {
-            "Name": "OfferPlaced",
-            "DisplayName": "Offer Placed",
+            "Name": "Requested",
+            "DisplayName": "Requested",
             "Description": "Offer has been placed for the item",
             "PercentComplete": 60,
             "Style": "Success",
@@ -123,18 +129,27 @@
                 "AllowedInstanceRoles": [ "InstanceOwner" ],
                 "Description": "Reject the proposed offer for the item",
                 "Function": "Reject",
-                "NextStates": [ "ItemAvailable" ],
+                "NextStates": [ "Offered" ],
                 "DisplayName": "Reject"
               }
             ]
           },
           {
             "Name": "Accepted",
-            "DisplayName": "Accepted",
+            "DisplayName": "Borrowed",
             "Description": "Asset transfer process is complete",
             "PercentComplete": 100,
             "Style": "Success",
-            "Transitions": []
+            "Transitions": [
+              {
+                "AllowedRoles": [],
+                "AllowedInstanceRoles": [ "InstanceBorrower" ],
+                "Description": "Make item available on a list",
+                "Function": "OfferAsset",
+                "NextStates": [ "Offered" ],
+                "DisplayName": "Offer asset"
+              }
+            ]
           }
         ]
       }
